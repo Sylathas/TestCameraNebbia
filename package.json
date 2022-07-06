@@ -1,0 +1,15 @@
+{
+  "name": "template_three.js_unity",
+  "version": "1.0.0",
+  "description": "Template for a camerANebbia project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Niccolò Abate",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "three": "^0.142.0"
+  }
+}
