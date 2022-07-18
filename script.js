@@ -1,5 +1,5 @@
-import * as THREE from 'https://unpkg.com/three@0.138.0/build/three.module.js';
-import { MapControls } from 'https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js';
+import * as THREE from './node_modules/three/build/three.module.js';
+import { MapControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 
 
 var game;
