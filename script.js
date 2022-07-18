@@ -188,7 +188,7 @@ class XMLElement{
       const material = new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
         map: texture,
-        transparent: true,
+        alphaTest : 0.5
       });
       console.log("ciao");
       const plane = new THREE.Mesh( geometry, material );
