@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { MapControls } from 'OrbitControls';
+import * as THREE from './node_modules/three/build/three.module.js';
+import { MapControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 
 
 var game;
@@ -65,23 +65,21 @@ class Game{
       const nome = $(this).children("nome").first().text();
       const offset = new THREE.Vector2(parseFloat($(this).children("offsetcompx").first().text()) * scalePos, parseFloat($(this).children("offsetcompy").first().text()) * scalePos);
       const position = new THREE.Vector3(parseFloat($(this).children("x").first().text())* scalePos, parseFloat($(this).children("y").first().text())* scalePos, parseFloat($(this).children("z").first().text())* scalePos) ;
-      const scale = new THREE.Vector3(parseFloat($(this).children("scalax").first().text())* scalePos, parseFloat($(this).children("scalay").first().text())* scalePos, parseFloat($(this).children("scalaz").first().text())* scalePos);
+      const scale = new THREE.Vector3(parseFloat($(this).children("scalax").first().text())* -scalePos, parseFloat($(this).children("scalay").first().text())* scalePos, parseFloat($(this).children("scalaz").first().text())* scalePos);
       const layers = this;
 
       //find total rotation
       const rotx = THREE.MathUtils.degToRad(parseFloat($(this).children("rotx").first().text()))
       const roty = THREE.MathUtils.degToRad(parseFloat($(this).children("roty").first().text()))
       const rotz = THREE.MathUtils.degToRad(parseFloat($(this).children("rotz").first().text()))
-      const xAng = new THREE.Quaternion();
-      xAng.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ),  -rotx);
-      const yAng = new THREE.Quaternion();
-      yAng.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ),  roty);
-      const zAng = new THREE.Quaternion();
-      zAng.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ),  -rotz);
+      const xAng =  new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ),  -rotx);
+      const yAng =   new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ),  roty);
+      const zAng =  new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), -rotz);
       let rotation = new THREE.Quaternion();
-      rotation = xAng;
-      rotation.multiply(yAng);
-      rotation.multiply(zAng);
+      console.log(parseFloat($(this).children("rotx").first().text()), parseFloat($(this).children("roty").first().text()), parseFloat($(this).children("rotz").first().text()))
+      console.log(rotx, roty, rotz, xAng, yAng, zAng, rotation);
+      rotation.multiplyQuaternions(xAng, yAng, zAng);
+      console.log(rotation);
 
       let xmlElement = new XMLElement(type, src, nome, offset, position, rotation, scale, game);
 
@@ -117,9 +115,9 @@ class Game{
     const game = this;
     this.controls.update();
 
-    for (var j = 0; j < game.images.length; j++){
+    /*for (var j = 0; j < game.images.length; j++){
         game.images[j].object.quaternion.copy(game.camera.quaternion);
-    }
+    }*/
 
     requestAnimationFrame( function(){ game.animate(); } );
     this.render();
@@ -152,7 +150,7 @@ class XMLComp{
     this.object = new THREE.Object3D();
     //this.object.position.set(position.x - offset.x, position.y - offset.y, position.z);
     this.object.position.set(position.x, position.y, position.z);
-    this.object.scale.set(scale.x, scale.y, scale.z);
+    this.object.scale.set(scale.x, -scale.y, scale.z);
     this.object.applyQuaternion(this.rotation);
     this.object.name = nome;
   }
@@ -188,12 +186,12 @@ class XMLElement{
       const material = new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
         map: texture,
-        transparent: true,
+        alphaTest : 0.5
       });
       console.log("ciao");
       const plane = new THREE.Mesh( geometry, material );
-      //plane.position.set(element.position.x - element.offset.x, element.position.y - element.offset.y, element.position.z);
-      plane.position.set(element.position.x, element.position.y, element.position.z);
+      plane.position.set(element.position.x - element.offset.x, element.position.y - element.offset.y, element.position.z);
+      //plane.position.set(element.position.x, element.position.y, element.position.z);
       plane.applyQuaternion(this.rotation);
       plane.name = element.nome;
       element.object = plane;
