@@ -113,8 +113,12 @@ class Game{
       }
     }
 
+    let ts;
+
     window.addEventListener( 'resize', () => game.onWindowResize(), true );
-    window.addEventListener( 'wheel', () => game.cameraUpdate(event, game.camera, this.accelleration), true);
+    window.addEventListener( 'wheel', () => game.cameraUpdate(event, this.accelleration), true);
+    window.addEventListener( 'touchstart', () => game.touchStart(event, ts), true);
+    window.addEventListener( 'touchmove', () => game.cameraUpdateTouch(event, this.accelleration, ts), true);
 
     this.animate();
   }
@@ -124,9 +128,9 @@ class Game{
     this.camera.position.z = this.camera.position.z + this.accelleration;
     this.accelleration = Math.round((this.accelleration + Number.EPSILON) * 100) / 100;
     if(this.accelleration > 0){
-      this.accelleration = this.accelleration - 0.03;
+      this.accelleration = this.accelleration - 0.02;
     } else if(this.accelleration < 0){
-      this.accelleration = this.accelleration + 0.03;
+      this.accelleration = this.accelleration + 0.02;
     }
     //this.controls.update();
 
@@ -145,8 +149,7 @@ class Game{
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 	}
 
-  cameraUpdate(event, camera, accelleration) {
-    this.camera = camera;
+  cameraUpdate(event, accelleration) {
     this.accelleration = accelleration;
     if(this.accelleration < 0.8){
       if (event.deltaY < 0){
@@ -155,6 +158,22 @@ class Game{
       else if (event.deltaY > 0)
       {
         this.accelleration = this.accelleration - 0.2;
+      }
+    }
+  }
+
+  touchStart(e, ts) {
+    ts = e.originalEvent.touches[0].clientY;
+  }
+
+  cameraUpdateTouch(event, accelleration, ts) {
+    this.accelleration = accelleration;
+    var te = e.originalEvent.changedTouches[0].clientY;
+    if(this.accelleration < 0.8){
+      if (ts > te) {
+        this.accelleration = this.accelleration - 0.2;
+      } else {
+        this.accelleration = this.accelleration + 0.2;
       }
     }
   }
